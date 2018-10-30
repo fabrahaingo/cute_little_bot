@@ -53,10 +53,10 @@ A window should pop up, leading you to the folling page: [Billeterie Opera de Pa
 > **NOTE**: if the event name contains spaces, replace them all by "-".
 *For example, "la dame aux camelias" will become "la-dame-aux-camelias"*.
 
-If the event has already been released, you'll end up with this:
+> If the event has already been released, you'll end up with this:
 ![event_name_and_type_input](https://github.com/fabrahaingo/booking_bot/blob/master/img/specify_event.png)
 
-If the event hasn't been released yet, you'll have to wait until it finds the link. In the meantime, you'll see the number of refreshs appear continuously on your screen like so:
+> If the event hasn't been released yet, you'll have to wait until it finds the link. In the meantime, you'll see the number of refreshs appear continuously on your screen like so:
 ![wait_event_example](https://github.com/fabrahaingo/booking_bot/blob/master/img/refreshing.png)
 
 **6.** Click one last time on the browser window
