@@ -1,0 +1,25 @@
+{
+  "name": "booking_bot",
+  "version": "1.0.0",
+  "description": "A little bot to get your Avant-Premiere tickets way more easily",
+  "main": "getMeATicket.js",
+  "dependencies": {
+    "prompt": "^1.0.0",
+    "prompt-async": "^0.9.9",
+    "puppeteer": "^1.9.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "node getMeATicket.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fabrahaingo/booking_bot.git"
+  },
+  "author": "frahaing",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fabrahaingo/booking_bot/issues"
+  },
+  "homepage": "https://github.com/fabrahaingo/booking_bot#readme"
+}
