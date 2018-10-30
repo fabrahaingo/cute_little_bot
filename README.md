@@ -41,7 +41,11 @@ A window should pop up, leading you to the folling page: [Billeterie Opera de Pa
 
 > **NOTE**: **no character will appear** on your screen for confidentiality purposes, no worries, just hit <Enter> once you're done writing it.
 
+If the event has already been released, you'll end up with this:
 ![username_and_password_input](https://github.com/fabrahaingo/booking_bot/blob/master/img/credentials.png)
+
+If the event hasn't been released yet, you'll have to wait until it finds the link. In the meantime, you'll see the number of refreshs appear continuously on your screen like so:
+![wait_event_example](https://github.com/fabrahaingo/booking_bot/blob/master/img/refreshing.png)
 
 **4.** Go back to the opened window and **verify that you're successfully logged in**.
 
