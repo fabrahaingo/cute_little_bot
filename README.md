@@ -22,26 +22,31 @@ node getMeATicket.js
 A window should pop up, leading you to the folling page: [Billeterie Opera de Paris](https://billetterie.operadeparis.fr/account/login)
 
 
-## Time to work for you bot, simply follow thos simple steps:
+## Time to work for you bot, simply follow those simple steps:
 
-1. Return to your Terminal.
+**1.** Return to your Terminal.
 
-2. Input your **username** then confirm.
 
-3. Input your **password** then confirm. 
+**2.** Input your **username** then confirm.
+
+
+**3.** Input your **password** then confirm. 
 > **NOTE**: no **character will appear** on your screen for confidential purpose, no worries, just hit <Enter> once you're done writing it.
 
-4. Go back to the opened window and **verify that you're successfully logged in**. 
+
+**4.** Go back to the opened window and **verify that you're successfully logged in**. 
 > **DIDN'T WORK ?** : hit Command + C and redo all the steps from "node getMeATicket.js".
 
-5. In you Terminal, it's now time to tell your program which event you want to attend:
+
+**5.** In you Terminal, it's now time to tell your program which event you want to attend:
 	- Simply write "**ballet**" or "**opera**" (without the brackets).
 	- Then write the **name of the event** you wish to attend.
 	*For example "cendrillon"*
 > **NOTE**: if the event name contains spaces, replace them all by "-".
 *For example, "la dame aux camelias" will become "la-dame-aux-camelias"*.
 
-6. Click one last time on the browser window
+
+**6.** Click one last time on the browser window
 
 ## That's it !
 
