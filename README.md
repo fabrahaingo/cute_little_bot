@@ -8,13 +8,12 @@ To do so, open your **Terminal app** and copy paste the following line:
 git clone https://github.com/fabrahaingo/booking_bot.git && cd booking_bot
 ```
 
-### Run the following command if you never intalled Node.js and npm before:
+### For those who don't have Node.js and npm installed yet:
 ```
-/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" \\
-&& brew update && brew doctor && brew install node
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" && brew update && brew doctor && brew install node
 ```
 
-### Now that everyone has Node.js and npm installed...
+### For everyone
 
 Once that done, you'll need to **install all dependencies** needed for the bot to work.
 Simply run:
@@ -61,5 +60,12 @@ A window should pop up, leading you to the folling page: [Billeterie Opera de Pa
 
 ## That's it !
 
-You can sit down and relax while your bot is doing all the hard word for you.
+Sit back and relax while your bot is doing all the hard word for you.
 **Don't forget to keep an eye on him** and stay ready to input the capcha you'll be asked to solve... ! :)
+
+### Features to implement:
+- [ ] Capcha solver
+- [ ] If login fails, retries instead of having to restart the program
+- [ ] Other websites that work with AJAX requests
+- [ ] Check format of user inputs
+- [ ] Better way to notify user when a link is found
