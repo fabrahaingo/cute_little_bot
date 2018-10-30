@@ -41,6 +41,7 @@ A window should pop up, leading you to the folling page: [Billeterie Opera de Pa
 
 > **NOTE**: **no character will appear** on your screen for confidentiality purposes, no worries, just hit <Enter> once you're done writing it.
 
+![username_and_password_input](https://github.com/fabrahaingo/booking_bot/blob/master/img/credentials.png)
 
 **4.** Go back to the opened window and **verify that you're successfully logged in**.
 
@@ -55,6 +56,7 @@ A window should pop up, leading you to the folling page: [Billeterie Opera de Pa
 > **NOTE**: if the event name contains spaces, replace them all by "-".
 *For example, "la dame aux camelias" will become "la-dame-aux-camelias"*.
 
+![event_name_and_type_input](https://github.com/fabrahaingo/booking_bot/blob/master/img/specify_event.png)
 
 **6.** Click one last time on the browser window
 
@@ -63,7 +65,7 @@ A window should pop up, leading you to the folling page: [Billeterie Opera de Pa
 Sit back and relax while your bot is doing all the hard word for you.
 **Don't forget to keep an eye on him** and stay ready to input the capcha you'll be asked to solve... ! :)
 
-Wait you're done with your booking, click on your Terminal window and hit Command + C to kill the script.
+When you're done with your booking, click on your Terminal window and hit Command + C to kill the script.
 The browser will then automatically close itself.
 You can now close your Terminal.
 
