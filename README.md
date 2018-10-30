@@ -10,7 +10,8 @@ git clone https://github.com/fabrahaingo/booking_bot.git && cd booking_bot
 
 ### Run the following command if you never intalled Node.js and npm before:
 ```
-/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" && brew update && brew doctor && brew install node
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" \\
+&& brew update && brew doctor && brew install node
 ```
 
 ### Now that everyone has Node.js and npm installed...
