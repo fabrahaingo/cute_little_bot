@@ -8,6 +8,13 @@ To do so, open your **Terminal app** and copy paste the following line:
 git clone https://github.com/fabrahaingo/booking_bot.git && cd booking_bot
 ```
 
+### Run the following command if you never intalled Node.js and npm before:
+```
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" && brew update && brew doctor && brew install node
+```
+
+### Now that everyone has Node.js and npm installed...
+
 Once that done, you'll need to **install all dependencies** needed for the bot to work.
 Simply run:
 ```
@@ -31,11 +38,11 @@ A window should pop up, leading you to the folling page: [Billeterie Opera de Pa
 
 
 **3.** Input your **password** then confirm.
- 
+
 > **NOTE**: **no character will appear** on your screen for confidentiality purposes, no worries, just hit <Enter> once you're done writing it.
 
 
-**4.** Go back to the opened window and **verify that you're successfully logged in**. 
+**4.** Go back to the opened window and **verify that you're successfully logged in**.
 
 > **DIDN'T WORK ?** : hit Command + C and redo all the steps from "node getMeATicket.js".
 

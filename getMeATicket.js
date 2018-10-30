@@ -56,10 +56,21 @@ function delay(timeout) {
 	return;
   }
 
+  var schema = {
+	  properties: {
+		  performance_type: {
+			  required: true
+		  },
+		  performance_name: {
+			  required: true
+		  }
+	  }
+  }
+
   // Asking for BALLET or OPERA
   // Asking for PERF_NAME (replace all ' ' by '-') => "la dame aux camelias" must become "la-dame-aux-camelias"
   prompt.start();
-  const url_values = await prompt.get(["performance_type", "performance_name"]);
+  const url_values = await prompt.get(schema);
   const target_url = 'https://www.operadeparis.fr/saison-18-19/' + url_values.performance_type + '/' + url_values.performance_name + '/performances';
 
   await page.goto(target_url,
