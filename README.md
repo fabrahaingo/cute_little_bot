@@ -39,8 +39,8 @@ A window should pop up, leading you to the folling page: [Billeterie Opera de Pa
 
 
 **5.** In you Terminal, it's now time to tell your program which event you want to attend:
-	   - Simply write "**ballet**" or "**opera**" (without the brackets).
-	   - Then write the **name of the event** you wish to attend.
+   - Simply write "**ballet**" or "**opera**" (without the brackets).
+   - Then write the **name of the event** you wish to attend.
 	   *For example "cendrillon"*
 > **NOTE**: if the event name contains spaces, replace them all by "-".
 *For example, "la dame aux camelias" will become "la-dame-aux-camelias"*.
