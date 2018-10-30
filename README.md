@@ -63,6 +63,10 @@ A window should pop up, leading you to the folling page: [Billeterie Opera de Pa
 Sit back and relax while your bot is doing all the hard word for you.
 **Don't forget to keep an eye on him** and stay ready to input the capcha you'll be asked to solve... ! :)
 
+Wait you're done with your booking, click on your Terminal window and hit Command + C to kill the script.
+The browser will then automatically close itself.
+You can now close your Terminal.
+
 ### Features to implement:
 - [ ] Capcha solver
 - [ ] If login fails, retries instead of having to restart the program
