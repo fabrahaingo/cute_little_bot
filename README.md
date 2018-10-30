@@ -33,24 +33,17 @@ A window should pop up, leading you to the folling page: [Billeterie Opera de Pa
 
 **1.** Return to your Terminal.
 
-
 **2.** Input your **username** then confirm.
-
 
 **3.** Input your **password** then confirm.
 
 > **NOTE**: **no character will appear** on your screen for confidentiality purposes, no worries, just hit <Enter> once you're done writing it.
 
-If the event has already been released, you'll end up with this:
 ![username_and_password_input](https://github.com/fabrahaingo/booking_bot/blob/master/img/credentials.png)
-
-If the event hasn't been released yet, you'll have to wait until it finds the link. In the meantime, you'll see the number of refreshs appear continuously on your screen like so:
-![wait_event_example](https://github.com/fabrahaingo/booking_bot/blob/master/img/refreshing.png)
 
 **4.** Go back to the opened window and **verify that you're successfully logged in**.
 
 > **DIDN'T WORK ?** : hit Command + C and redo all the steps from "node getMeATicket.js".
-
 
 **5.** In you Terminal, it's now time to tell your program which event you want to attend:
    - Simply write "**ballet**" or "**opera**" (without the brackets).
@@ -60,7 +53,11 @@ If the event hasn't been released yet, you'll have to wait until it finds the li
 > **NOTE**: if the event name contains spaces, replace them all by "-".
 *For example, "la dame aux camelias" will become "la-dame-aux-camelias"*.
 
+If the event has already been released, you'll end up with this:
 ![event_name_and_type_input](https://github.com/fabrahaingo/booking_bot/blob/master/img/specify_event.png)
+
+If the event hasn't been released yet, you'll have to wait until it finds the link. In the meantime, you'll see the number of refreshs appear continuously on your screen like so:
+![wait_event_example](https://github.com/fabrahaingo/booking_bot/blob/master/img/refreshing.png)
 
 **6.** Click one last time on the browser window
 
