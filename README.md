@@ -21,7 +21,8 @@ node getMeATicket.js
 
 A window should pop up, leading you to the folling page: [Billeterie Opera de Paris](https://billetterie.operadeparis.fr/account/login)
 
-### It's time to follow those simple steps:
+
+## Time to work for you bot, simply follow thos simple steps:
 
 1. Return to your Terminal.
 
