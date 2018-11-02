@@ -6,6 +6,7 @@
   "dependencies": {
     "prompt": "^1.0.0",
     "prompt-async": "^0.9.9",
+    "prompt-list": "^3.2.0",
     "puppeteer": "^1.9.0"
   },
   "devDependencies": {},

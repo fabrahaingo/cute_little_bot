@@ -1,5 +1,7 @@
 const puppeteer = require('puppeteer');
 const prompt = require("prompt-async");
+const login = require('./functions/login.js');
+const inputs = require('./functions/getInputs.js');
 
 // For testing purposes
 function delay(timeout) {
@@ -14,46 +16,13 @@ function delay(timeout) {
   })
   const page = await browser.newPage();
 
-  // Go to login page
-  await page.goto('https://billetterie.operadeparis.fr/account/login')
-
-  const USERNAME_SELECTOR = '#login';
-  const PASSWORD_SELECTOR = '#password';
-  const BUTTON_SELECTOR = '#continue_button > span.text';
-
-  var schema = {
-	  properties: {
-		  username: {
-			  required: true
-		  },
-		  password: {
-			  hidden: true, // So people won't see you type your password
-			  required: true
-		  }
-	  }
-  }
-
-  // Asking for user credentials
-  prompt.start();
-  const credentials = await prompt.get(schema);
-
-  // Inputing credentials
-  await page.click(USERNAME_SELECTOR);
-  await page.keyboard.type(credentials.username);
-  await page.click(PASSWORD_SELECTOR);
-  await page.keyboard.type(credentials.password);
-  await page.click(BUTTON_SELECTOR);
-  await page.waitForNavigation();
-
-  // Returns error if login timed out
   try {
-  	await page.waitForSelector('body > div.content-wrapper > section > div > div > div > h2');
+    await login.login(page);
   }
   catch (error) {
-	console.log("Couldn't log you in...");
-	await page.close();
-	await browser.close();
-	return;
+    await console.log(error);
+    await console.log('Unexpected error while loging you in...');
+    return;
   }
 
   var schema = {

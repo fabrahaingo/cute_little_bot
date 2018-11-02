@@ -72,7 +72,7 @@ You can now close your Terminal.
 
 ### Features to implement:
 - [ ] Capcha solver
-- [ ] If login fails, retries instead of having to restart the program
+- [X] If login fails, retries instead of having to restart the program
 - [ ] Other websites that work with AJAX requests
 - [ ] Check format of user inputs
 - [ ] Better way to notify user when a link is found
