@@ -5,11 +5,11 @@ async function login(page) {
   let credentials = await inputs.getCredentials();
 
   // Go to login page
-  await page.goto('https://billetterie.operadeparis.fr/account/login');
+  await page.goto('https://www.operadeparis.fr/login');
 
-  const USERNAME_SELECTOR = '#login';
-  const PASSWORD_SELECTOR = '#password';
-  const BUTTON_SELECTOR = '#continue_button > span.text';
+  const USERNAME_SELECTOR = 'body > div.content-wrapper > div > div > div > div.LoginBox__form-container > form > input:nth-child(7)';
+  const PASSWORD_SELECTOR = 'body > div.content-wrapper > div > div > div > div.LoginBox__form-container > form > input:nth-child(8)';
+  const BUTTON_SELECTOR = 'body > div.content-wrapper > div > div > div > div.LoginBox__form-container > form > input.LoginBox__form-submit.Button.Button--black.Button--block';
 
   // Inputing credentials
   await page.click(USERNAME_SELECTOR,

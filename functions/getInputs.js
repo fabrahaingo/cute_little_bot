@@ -22,6 +22,25 @@ async function getCredentials() {
   return result;
 }
 
+async function getCapcha() {
+  const prompt = require("prompt-async");
+  let result = new Array();
+
+  var schema = {
+    properties: {
+      capcha: {
+        required: true
+      }
+    }
+  }
+
+  // Start prompt
+  prompt.start();
+  const userCapcha = await prompt.get(schema);
+  result['capcha'] = Object.entries(userCredentials)[0][1];
+  return result;
+}
+
 module.exports = {
   getCredentials,
 };

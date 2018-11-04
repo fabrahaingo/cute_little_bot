@@ -4,6 +4,7 @@
   "description": "A little bot to get your Avant-Premiere tickets way more easily",
   "main": "getMeATicket.js",
   "dependencies": {
+    "play-sound": "^1.1.2",
     "prompt": "^1.0.0",
     "prompt-async": "^0.9.9",
     "prompt-list": "^3.2.0",
