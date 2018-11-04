@@ -34,7 +34,7 @@ git clone https://github.com/fabrahaingo/cute_little_bot.git && cd cute_little_b
 npm install
 ```
 
-**Run the cute little bot**:
+**Run the cute little bot** about 5 minutes before the tickets are released:
 ```
 node getMeATicket.js
 ```
