@@ -13,7 +13,7 @@ Open your **Terminal app**.
 **Download this repository**:
 
 ```
-git clone https://github.com/fabrahaingo/booking_bot.git && cd booking_bot
+git clone https://github.com/fabrahaingo/cute_little_bot.git && cd cute_little_bot
 ```
 
 <br>
