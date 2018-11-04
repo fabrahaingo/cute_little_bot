@@ -1,4 +1,4 @@
-# booking_bot
+# cute_little_bot
 
 <br>
 
