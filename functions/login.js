@@ -16,7 +16,7 @@ module.exports.login = async function(page, credentials) {
     await page.waitForSelector(`${config.SUCCESS_SELECTOR_1}, ${config.SUCCESS_SELECTOR_2}`, { timeout: 10000 })
     return
   }
-  catch {
+  catch (e) {
     throw new Error('Failed to log in, try again')
   }
 }
