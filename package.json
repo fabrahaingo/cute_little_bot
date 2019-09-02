@@ -4,11 +4,11 @@
   "description": "A little bot to get your Avant-Premiere tickets way more easily",
   "main": "getMeATicket.js",
   "dependencies": {
+    "get-json": "^1.0.1",
+    "inquirer": "^7.0.0",
     "play-sound": "^1.1.3",
-    "prompt": "^1.0.0",
-    "prompt-async": "^0.9.9",
-    "prompt-list": "^3.2.0",
-    "puppeteer": "^1.19.0"
+    "puppeteer": "^1.19.0",
+    "striptags": "^3.1.1"
   },
   "devDependencies": {},
   "scripts": {

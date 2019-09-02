@@ -1,53 +1,42 @@
-const prompt = require('prompt-async')
+const inquirer = require('inquirer')
 
-async function getCredentials() {
-  const prompt = require("prompt-async")
-  let result = new Array()
-
-  var schema = {
-    properties: {
-      username: {
-        required: true
-      },
-      passsword: {
-        hidden: true,
-        required: true
-      }
-    }
-  }
-
-  prompt.start()
-  const userCredentials = await prompt.get(schema)
-  result['username'] = Object.entries(userCredentials)[0][1]
-  result['password'] = Object.entries(userCredentials)[1][1]
-  return result
+// Ask if want to use currently saved credentials
+module.exports.keepCredentials = async function() {
+  return new Promise((resolve) => {
+    inquirer
+      .prompt([
+        {
+          type: 'confirm',
+          name: 'credentials',
+          message: 'Do you want to use your saved credentials ?',
+          default: [ true ]     
+        }
+      ])
+      .then(answers => {
+        resolve(answers.credentials)
+      })
+    })
 }
 
-async function getPerformanceLink() {
-  var schema = {
-    properties: {
-      season_year: {
-        required: true
-      },
-      performance_type: {
-        required: true
-      },
-      performance_name: {
-         required: true
-      }
-    }
-  }
-
-  // FORMAT YY-YY
-  // BALLET or OPERA
-  // PERF_NAME (replace all ' ' by '-')
-  prompt.start()
-  const performance = await prompt.get(schema)
-  const target_url = `https://www.operadeparis.fr/saison-${performance.season_year}/${performance.performance_type}/${performance.performance_name}/performances`
-  return target_url
-}
-
-module.exports = {
-  getCredentials,
-  getPerformanceLink
+module.exports.getCredentials = async function() {
+  return new Promise((resolve) => {
+    inquirer
+      .prompt([
+        {
+          type: 'input',
+          name: 'username',
+          message: 'Username ?'    
+        },
+        {
+          type: 'password',
+          name: 'password',
+          message: 'Password ?'
+        }
+      ])
+      .then(answers => {
+        process.env.OPERA_USERNAME = answers.username
+        process.env.OPERA_PASSWORD = answers.password
+        resolve()
+      })
+    })
 }
