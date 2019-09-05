@@ -37,7 +37,7 @@ const events = require('./functions/parseEvents');
   let browser
   try {
     browser = await puppeteer.launch({
-      headless: true,
+      headless: false,
       defaultViewport: null
     })
   } catch (error) {
