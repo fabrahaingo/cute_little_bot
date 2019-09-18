@@ -78,7 +78,7 @@ const events = require('./functions/parseEvents');
   }
 
   await utils.beep()
-  console.log(body.items[0].content.block.buttons[1].url)
+  console.log(body.items[0].content.block.buttons[0].url)
   console.log('Found it ! Getting you there...')
   
   await page.bringToFront()

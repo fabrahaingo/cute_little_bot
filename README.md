@@ -6,9 +6,10 @@
 
 Open your **Terminal app**. 
 
-> Its icon looks like this:
+> Its icon looks like this
+> <img src="/img/terminal.png" height="40">
 
-> <img src="https://github.com/fabrahaingo/booking_bot/blob/master/img/terminal.png" height="40">
+
 
 **Download this repository**:
 
@@ -18,7 +19,7 @@ git clone https://github.com/fabrahaingo/cute_little_bot.git && cd cute_little_b
 
 <br>
 
-### If you don't have Node.js and/or npm, run
+### If you don't have Node.js/npm installed
 ```
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"; brew update; brew doctor; brew install node
 ```
@@ -34,65 +35,44 @@ git clone https://github.com/fabrahaingo/cute_little_bot.git && cd cute_little_b
 npm install
 ```
 
-**Run the cute little bot** about 5 minutes before the tickets are released:
+**Run the cute little bot** about 5 minutes before tickets are released:
 ```
 node getMeATicket.js
 ```
 
-A **blank window** will pop up.
+<br>
 
-Simply go back to your **Terminal app**.
+
+Wait a few seconds...
 
 <br>
 
-## Tell the cute little bot how to work:
+**1.** **Select the performance** you're waiting for:
+> <img src="/img/choose_performance.png" height="160">
 
-<br>
 
-**1.** Input your **username** then confirm.
+**2.** Input your **username** then confirm.
 
-<br>
+**3.** Input your **password** then confirm.
 
-**2.** Input your **password** then confirm.
-
-> **NOTE**: **no character will appear**, that's normal, just hit your **Enter** key after you wrote it.
-
-<img src="https://github.com/fabrahaingo/booking_bot/blob/master/img/credentials.png" height="80">
-
-<br>
-
-**3.** **Click** on the blank window. and **check that you're successfully logged in**.
-
-> **DIDN'T WORK ?** : Repeat the first 3 steps.
-
-<br>
-
-**4.** In you **Terminal**:
-   - Write "**ballet**" or "**opera**" (without the double-quotes),
-   
-   then
-   
-   - Write the **name of the event** you wish to attend.
-	   *For example "cendrillon"*
-
-> **NOTE**: if the event name contains spaces, replace them all by "-".
-*For example, "la dame aux camelias" will become "**la-dame-aux-camelias**"*.
+> **Note**: you won't see any character appear. Don't worry, it's normal.
+<img src="/img/credentials.png" height="65">
 
 <br>
 
 > If the event has already been released, you'll end up with this:
 
-> <img src="https://github.com/fabrahaingo/booking_bot/blob/master/img/specify_event.png" height="110">
+> <img src="/img/specify_event.png" height="110">
 
 <br>
 
 > If the event hasn't been released yet, you'll have to wait until it finds the link. In the meantime, you'll see the number of refreshs appear continuously on your screen like so:
 
-> <img src="https://github.com/fabrahaingo/booking_bot/blob/master/img/refreshing.png" height="160">
+> <img src="/img/refreshing.png" height="160">
 
 <br>
 
-**5.** When you hear a beep, go to the browser:
+**4.** When you hear a beep, go to the browser:
 
 - Copy the Captcha that's on the page,
 	
