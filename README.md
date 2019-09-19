@@ -50,50 +50,39 @@ Wait a few seconds...
 **1.** **Select the performance** you're waiting for:
 > <img src="/img/choose_performance.png" height="160">
 
+<br>
 
 **2.** Input your **username** then confirm.
+
+<br>
 
 **3.** Input your **password** then confirm.
 
 > **Note**: you won't see any character appear. Don't worry, it's normal.
 <img src="/img/credentials.png" height="65">
+> If the event is not released, you'll have to wait until it is. In the meantime, you'll see the refresh rate appear on your Terminal window.
+> 
+**<u>Pro tip</u>**: before running the script, copy-paste thins command in you terminal (using your credentials of course): `export OPERA_USERNAME=yourUsername && export OPERA_PASSWORD=yourPassword`
 
 <br>
 
-> If the event has already been released, you'll end up with this:
+**4.** You will hear a beep and be **redirected**:
 
-> <img src="/img/specify_event.png" height="110">
-
-<br>
-
-> If the event hasn't been released yet, you'll have to wait until it finds the link. In the meantime, you'll see the number of refreshs appear continuously on your screen like so:
-
-> <img src="/img/refreshing.png" height="160">
-
-<br>
-
-**4.** When you hear a beep, go to the browser:
-
-- Copy the Captcha that's on the page,
-	
-then
-	
+- Copy the captcha on the page,
+<i>then</i>
 - Enter the waiting line.
 	
 <br>
 
 ## That's it !
-## Now wait for a new "beep", notifying that the new reservation link has been found !
 
-**Don't forget** that you'll still need to **manually select your tickets** once the link is found !
+Don't forget that you'll still need to **manually select your tickets** once the link is found !
 
-When you're done with your booking, click on your Terminal window and hit Command + C to kill the program.
-The browser will automatically close.
-You can now close your Terminal app.
+When you're done with your booking, click on your Terminal window and hit `Command + C` to kill the program.
 
 ### Features to implement:
-- [ ] Auto ticket selector
-- [ ] Capcha solver
+- [X] Auto ticket selector
 - [X] If login fails, retries instead of having to restart the program
+- [ ] Capcha solver
 - [ ] Check user's inputs
-- [X] Better way to notify user when a link is found
+- [ ] Better way to notify user when a link is found
