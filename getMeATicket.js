@@ -83,7 +83,7 @@ const events = require('./functions/parseEvents');
   
   await page.bringToFront()
 
-  await page.goto(body.items[0].content.block.buttons[1].url, { waitUntil: 'networkidle0' })
+  await page.goto(body.items[0].content.block.buttons[0].url, { waitUntil: 'networkidle0' })
   return 0
 
 })()
