@@ -10,7 +10,12 @@ async function parseOnePerformance(elem) {
     }
     return response
   })
-  if (response && response.items[0] && response.items[0].content.performance.mentions[0] == 'Avant-première jeunes (-28 ans)') {
+  if (
+    response &&
+    response.items[0] &&
+    response.items[0].content.performance.mentions[0] ==
+      'Avant-première jeunes (-28 ans)'
+  ) {
     let title = striptags(elem.title).replace('&#8203;', '')
     return [title, elem.link + '/performances']
   }
@@ -18,29 +23,35 @@ async function parseOnePerformance(elem) {
 }
 
 async function getPerformancesFromVenue(venueRequestPage) {
-  response = await getJSON(venueRequestPage, async function(error, response){
+  response = await getJSON(venueRequestPage, async function (error, response) {
     if (error) {
       throw new Error(`Error while parsing ${venueRequestPage}`)
     }
     return response
   })
   let events = {}
+  let count = 1
+  let total = response.datas.length
   for (let elem of response.datas) {
     result = await parseOnePerformance(elem)
     if (result && result[0] && result[1]) {
       events[result[0]] = result[1]
     }
+    console.log(`Page ${count}/${total} scanned`)
+    count++
   }
   return events
 }
 
-module.exports.getPerformances = async function() {
+module.exports.getPerformances = async function () {
+  console.log(`Scanning Garnier's performances...`)
   let events1 = await getPerformancesFromVenue(config.PERF_LIST_PAGE_GARNIER)
+  console.log(`Scanning Bastille's performances...`)
   let events2 = await getPerformancesFromVenue(config.PERF_LIST_PAGE_BASTILLE)
   return Object.assign(events1, events2)
 }
 
-module.exports.getLink = async function(performances) {
+module.exports.getLink = async function (performances) {
   return new Promise((resolve) => {
     inquirer
       .prompt([
@@ -51,9 +62,9 @@ module.exports.getLink = async function(performances) {
           choices: Object.keys(performances)
         }
       ])
-      .then(answers => {
+      .then((answers) => {
         process.env.OPERA_PERF_LINK = performances[answers.performance]
         resolve()
       })
-    })
+  })
 }

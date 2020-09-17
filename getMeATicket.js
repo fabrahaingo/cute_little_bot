@@ -1,14 +1,13 @@
-const puppeteer = require('puppeteer');
-const login = require('./functions/login');
-const inputs = require('./functions/getInputs');
-const utils = require('./functions/utils');
-const events = require('./functions/parseEvents');
+const puppeteer = require('puppeteer')
+const login = require('./functions/login')
+const inputs = require('./functions/getInputs')
+const utils = require('./functions/utils')
+const events = require('./functions/parseEvents')
 
-(async () => {
-  
+;(async () => {
   // Get avant-premiere links
   try {
-    console.log('Getting avant-premières of 19-20 season...')
+    console.log('Getting avant-premières of 20-21 season...')
     performances = await events.getPerformances()
     await events.getLink(performances)
   } catch (error) {
@@ -16,11 +15,13 @@ const events = require('./functions/parseEvents');
     console.log('Error while parsing performance pages')
     process.exit(1)
   }
-  
+
   // Get credentials
   try {
     if (!process.env.OPERA_USERNAME || !process.env.OPERA_PASSWORD) {
-      console.log(`Save credentials with "export OPERA_USERNAME=yourUsername && export OPERA_PASSWORD=yourPassword"`)
+      console.log(
+        `Save credentials with "export OPERA_USERNAME=yourUsername && export OPERA_PASSWORD=yourPassword"`
+      )
       await inputs.getCredentials()
     } else {
       response = await inputs.keepCredentials()
@@ -45,8 +46,16 @@ const events = require('./functions/parseEvents');
     process.exit(1)
   }
 
-  const page = await browser.newPage()  
-  await page.setDefaultTimeout(0)
+  const page = await browser.newPage()
+  page.on('pageerror', function (err) {
+    theTempValue = err.toString()
+    console.log('Page error: ' + theTempValue)
+  })
+  page.on('error', function (err) {
+    theTempValue = err.toString()
+    console.log('Error: ' + theTempValue)
+  })
+  page.setDefaultTimeout(0)
 
   try {
     await login.login(page)
@@ -54,10 +63,12 @@ const events = require('./functions/parseEvents');
     console.log('Login failed (timeout or wrong credentials)')
     process.exit(1)
   }
+  console.log(`Going to ${process.env.OPERA_PERF_LINK}`)
   await page.goto(process.env.OPERA_PERF_LINK, { waitUntil: 'load' })
 
   await page.content()
-  body = await page.evaluate(() => { // Getting page content
+  body = await page.evaluate(() => {
+    // Getting page content
     return JSON.parse(document.querySelector('body').innerText)
   })
 
@@ -66,6 +77,7 @@ const events = require('./functions/parseEvents');
 
   // Repeat until booking available
   while (body.items[0].template !== 'available') {
+    // CHANGE
     await page.goto(process.env.OPERA_PERF_LINK, { waitUntil: 'load' })
     body = await page.evaluate(() => {
       return JSON.parse(document.querySelector('body').innerText)
@@ -77,13 +89,14 @@ const events = require('./functions/parseEvents');
     }
   }
 
-  await utils.beep()
+  utils.beep()
   console.log(body.items[0].content.block.buttons[0].url)
   console.log('Found it ! Getting you there...')
-  
+
   await page.bringToFront()
 
-  await page.goto(body.items[0].content.block.buttons[0].url, { waitUntil: 'networkidle0' })
-  return 0
-
+  await page.goto(body.items[0].content.block.buttons[0].url, {
+    waitUntil: 'networkidle0'
+  })
+  //return 0
 })()
