@@ -13,8 +13,7 @@ async function parseOnePerformance(elem) {
   if (
     response &&
     response.items[0] &&
-    response.items[0].content.performance.mentions[0] ==
-      'Avant-première jeunes (-28 ans)'
+    /Avant-première jeunes/.test(response.items[0].content.performance.mentions[0])
   ) {
     let title = striptags(elem.title).replace('&#8203;', '')
     return [title, elem.link + '/performances']
