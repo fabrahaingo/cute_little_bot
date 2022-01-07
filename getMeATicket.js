@@ -7,7 +7,7 @@ const events = require('./functions/parseEvents')
 ;(async () => {
   // Get avant-premiere links
   try {
-    console.log('Getting avant-premières of 20-21 season...')
+    console.log('Getting avant-premières of 21-22 season...')
     performances = await events.getPerformances()
     await events.getLink(performances)
   } catch (error) {
