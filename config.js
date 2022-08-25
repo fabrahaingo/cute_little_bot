@@ -1,8 +1,8 @@
-module.exports = {
+export default {
   PERF_LIST_PAGE_GARNIER:
-    'https://www.operadeparis.fr/programmation-et-billets-json?season=16&genres[]=1&genres[]=2&venues[]=6',
+    'https://www.operadeparis.fr/programmation-et-billets-json?season=17&genres[]=1&genres[]=2&venues[]=6',
   PERF_LIST_PAGE_BASTILLE:
-    'https://www.operadeparis.fr/programmation-et-billets-json?season=16&genres[]=1&genres[]=2&venues[]=4',
+    'https://www.operadeparis.fr/programmation-et-billets-json?season=17&genres[]=1&genres[]=2&venues[]=4',
 
   LOGIN_PAGE: 'https://www.operadeparis.fr/login',
 

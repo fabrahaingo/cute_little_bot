@@ -1,20 +1,23 @@
-const puppeteer = require('puppeteer')
-const login = require('./functions/login')
-const inputs = require('./functions/getInputs')
-const utils = require('./functions/utils')
-const events = require('./functions/parseEvents')
+import puppeteer from 'puppeteer'
+import login from './functions/login.js'
+import inputs from './functions/getInputs.js'
+import utils from './functions/utils.js'
+// import event from './functions/parseEvents.js'
+import fetch from 'node-fetch'
 
-;(async () => {
+(async () => {
   // Get avant-premiere links
-  try {
-    console.log('Getting avant-premières of 21-22 season...')
-    performances = await events.getPerformances()
-    await events.getLink(performances)
-  } catch (error) {
-    console.log(error)
-    console.log('Error while parsing performance pages')
-    process.exit(1)
-  }
+  // try {
+  //   console.log('Getting avant-premières of 22-23 season...')
+  //   let performances = await event.getPerformances()
+  //   await event.getLink(performances)
+  // } catch (error) {
+  //   console.log(error)
+  //   console.log('Error while parsing performance pages')
+  //   process.exit(1)
+  // }
+
+  process.env.OPERA_PERF_LINK = 'https://www.operadeparis.fr/saison-22-23/opera/salome/performances'
 
   // Get credentials
   try {
@@ -24,7 +27,7 @@ const events = require('./functions/parseEvents')
       )
       await inputs.getCredentials()
     } else {
-      response = await inputs.keepCredentials()
+      let response = await inputs.keepCredentials()
       if (response == false) {
         await inputs.getCredentials()
       }
@@ -46,6 +49,8 @@ const events = require('./functions/parseEvents')
     process.exit(1)
   }
 
+  console.log('Puppeteer launched successfully')
+
   const page = await browser.newPage()
   page.on('pageerror', function (err) {
     theTempValue = err.toString()
@@ -57,31 +62,34 @@ const events = require('./functions/parseEvents')
   })
   page.setDefaultTimeout(0)
 
+  console.log('New page opened successfully')
+
   try {
+    console.log('Trying to login')
     await login.login(page)
   } catch (error) {
-    console.log('Login failed (timeout or wrong credentials)')
+    console.log(`Login failed (timeout or wrong credentials): ${error}`)
     process.exit(1)
   }
-  console.log(`Going to ${process.env.OPERA_PERF_LINK}`)
-  await page.goto(process.env.OPERA_PERF_LINK, { waitUntil: 'load' })
 
-  await page.content()
-  body = await page.evaluate(() => {
-    // Getting page content
-    return JSON.parse(document.querySelector('body').innerText)
-  })
+  console.log('Logged in successfully. Waiting for the performance link to be released...')
+  // At this point, the user is logged in
+  // Chromium is oppened and ready to perform actions for the user
+
+  console.log(`Starting refreshes of ${process.env.OPERA_PERF_LINK}`)
 
   let iterations = 0
   let date = Date.now()
 
+  let response = await fetch(process.env.OPERA_PERF_LINK)
+  let data = await response.json()
+  console.log(data)
+
   // Repeat until booking available
-  while (body.items[0].template !== 'available') {
+  while (data.items[0].template !== 'available') {
     // CHANGE
-    await page.goto(process.env.OPERA_PERF_LINK, { waitUntil: 'load' })
-    body = await page.evaluate(() => {
-      return JSON.parse(document.querySelector('body').innerText)
-    })
+    response = await fetch(process.env.OPERA_PERF_LINK)
+    data = await response.json()
     iterations++
     if (iterations == 10) {
       date = utils.getRefreshRate(date)

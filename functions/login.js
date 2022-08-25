@@ -1,19 +1,19 @@
-const config = require('../config.js')
+import config from '../config.js'
 
-module.exports.login = async function(page) {
+async function login(page) {
 
   // Input credentials
-  await page.goto(config.LOGIN_PAGE);
-  await page.click(config.USERNAME_SELECTOR,{ clickCount: 3 })
+  await page.goto(config.LOGIN_PAGE)
+  await page.click(config.USERNAME_SELECTOR, { clickCount: 3 })
   await page.keyboard.type(process.env.OPERA_USERNAME)
-  await page.click(config.PASSWORD_SELECTOR,{ clickCount: 3})
+  await page.click(config.PASSWORD_SELECTOR, { clickCount: 3 })
   await page.keyboard.type(process.env.OPERA_PASSWORD)
   await page.click(config.BUTTON_SELECTOR)
 
   // Check if login was successful
   try {
-    const response = await page.waitForNavigation({waituntil: 'loaded'});
-    await response.request().redirectChain();
+    const response = await page.waitForNavigation({ waituntil: 'loaded' })
+    await response.request().redirectChain()
     await page.waitForSelector(`${config.SUCCESS_SELECTOR_1}, ${config.SUCCESS_SELECTOR_2}`)
     return
   }
@@ -21,3 +21,5 @@ module.exports.login = async function(page) {
     throw new Error('Failed to log in, try again')
   }
 }
+
+export default login

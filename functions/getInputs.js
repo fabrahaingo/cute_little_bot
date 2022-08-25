@@ -1,7 +1,7 @@
-const inquirer = require('inquirer')
+import inquirer from 'inquirer'
 
 // Ask if want to use currently saved credentials
-module.exports.keepCredentials = async function() {
+async function keepCredentials() {
   return new Promise((resolve) => {
     inquirer
       .prompt([
@@ -9,23 +9,23 @@ module.exports.keepCredentials = async function() {
           type: 'confirm',
           name: 'credentials',
           message: 'Do you want to use your saved credentials ?',
-          default: [ true ]     
+          default: [true]
         }
       ])
       .then(answers => {
         resolve(answers.credentials)
       })
-    })
+  })
 }
 
-module.exports.getCredentials = async function() {
+async function getCredentials() {
   return new Promise((resolve) => {
     inquirer
       .prompt([
         {
           type: 'input',
           name: 'username',
-          message: 'Username ?'    
+          message: 'Username ?'
         },
         {
           type: 'password',
@@ -38,5 +38,10 @@ module.exports.getCredentials = async function() {
         process.env.OPERA_PASSWORD = answers.password
         resolve()
       })
-    })
+  })
+}
+
+export default {
+  keepCredentials,
+  getCredentials
 }
