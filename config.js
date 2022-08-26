@@ -1,8 +1,5 @@
 export default {
-  PERF_LIST_PAGE_GARNIER:
-    'https://www.operadeparis.fr/programmation-et-billets-json?season=17&genres[]=1&genres[]=2&venues[]=6',
-  PERF_LIST_PAGE_BASTILLE:
-    'https://www.operadeparis.fr/programmation-et-billets-json?season=17&genres[]=1&genres[]=2&venues[]=4',
+  PERF_LIST_PAGE: 'https://www.operadeparis.fr/programmation-et-billets-json?season=17&experiences%5B%5D=43',
 
   LOGIN_PAGE: 'https://www.operadeparis.fr/login',
 

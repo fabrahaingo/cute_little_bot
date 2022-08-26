@@ -2,22 +2,22 @@ import puppeteer from 'puppeteer'
 import login from './functions/login.js'
 import inputs from './functions/getInputs.js'
 import utils from './functions/utils.js'
-// import event from './functions/parseEvents.js'
+import event from './functions/parseEvents.js'
 import fetch from 'node-fetch'
 
 (async () => {
   // Get avant-premiere links
-  // try {
-  //   console.log('Getting avant-premières of 22-23 season...')
-  //   let performances = await event.getPerformances()
-  //   await event.getLink(performances)
-  // } catch (error) {
-  //   console.log(error)
-  //   console.log('Error while parsing performance pages')
-  //   process.exit(1)
-  // }
+  try {
+    console.log('Getting avant-premières of 22-23 season...')
+    let performances = await event.getPerformances()
+    await event.getLink(performances)
+  } catch (error) {
+    console.log(error)
+    console.log('Error while parsing performance pages')
+    process.exit(1)
+  }
 
-  process.env.OPERA_PERF_LINK = 'https://www.operadeparis.fr/saison-22-23/opera/salome/performances'
+  // process.env.OPERA_PERF_LINK = 'https://www.operadeparis.fr/saison-22-23/opera/salome/performances'
 
   // Get credentials
   try {
@@ -49,20 +49,11 @@ import fetch from 'node-fetch'
     process.exit(1)
   }
 
-  console.log('Puppeteer launched successfully')
-
-  const page = await browser.newPage()
-  page.on('pageerror', function (err) {
-    theTempValue = err.toString()
-    console.log('Page error: ' + theTempValue)
+  let page
+  await browser.newPage().then((res) => {
+    page = res
+    page.setDefaultTimeout(0)
   })
-  page.on('error', function (err) {
-    theTempValue = err.toString()
-    console.log('Error: ' + theTempValue)
-  })
-  page.setDefaultTimeout(0)
-
-  console.log('New page opened successfully')
 
   try {
     console.log('Trying to login')
@@ -83,28 +74,34 @@ import fetch from 'node-fetch'
 
   let response = await fetch(process.env.OPERA_PERF_LINK)
   let data = await response.json()
-  console.log(data)
 
   // Repeat until booking available
-  while (data.items[0].template !== 'available') {
+  // ⚠️ ❌ TO CHANGE
+  while (data.items[0].template === 'available' && iterations < 20) {
     // CHANGE
     response = await fetch(process.env.OPERA_PERF_LINK)
     data = await response.json()
     iterations++
-    if (iterations == 10) {
+    if (iterations % 10 === 0) {
       date = utils.getRefreshRate(date)
-      iterations = 0
     }
   }
 
-  utils.beep()
-  console.log(body.items[0].content.block.buttons[0].url)
+  const foundLink = data.items[1].content.block.buttons[1].url
+  console.log(foundLink)
   console.log('Found it ! Getting you there...')
+
+  const params = new URLSearchParams(foundLink.substring(foundLink.indexOf('?'), foundLink.length))
+  const perfId = params.get('id')
+
+  const newLink = `https://billetterie.operadeparis.fr/secured/selection/event/seat?perfId=${perfId}&lang=fr&table=1`
 
   await page.bringToFront()
 
-  await page.goto(body.items[0].content.block.buttons[0].url, {
+  await page.goto(newLink, {
     waitUntil: 'networkidle0'
   })
+  await page.select('#eventFormData\\[0\\]\\.quantity', '2')
+  await page.click('#book', { clickCount: 1 })
   //return 0
 })()

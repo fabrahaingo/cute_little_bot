@@ -22,4 +22,4 @@ async function login(page) {
   }
 }
 
-export default login
+export default { login }

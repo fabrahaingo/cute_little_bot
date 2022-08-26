@@ -3,51 +3,43 @@ import getJSON from 'get-json'
 import striptags from 'striptags'
 import inquirer from 'inquirer'
 
-async function parseOnePerformance(elem) {
-  let response = await getJSON(`${elem.link}/performances`, (error, response) => {
-    if (error) {
-      throw new Error(`Error while parsing ${elem.link}/performances`)
-    }
-    return response
-  })
-  if (
-    response &&
-    response.items[0] &&
-    /Avant-première jeunes/.test(response.items[0].content.performance.mentions[0])
-  ) {
-    let title = striptags(elem.title).replace('&#8203;', '')
-    return [title, elem.link + '/performances']
-  }
-  return null
-}
-
-async function getPerformancesFromVenue(venueRequestPage) {
-  let response = await getJSON(venueRequestPage, async function (error, response) {
-    if (error) {
-      throw new Error(`Error while parsing ${venueRequestPage}`)
-    }
-    return response
-  })
-  let events = {}
-  let count = 1
-  let total = response.datas.length
-  for (let elem of response.datas) {
-    let result = await parseOnePerformance(elem)
-    if (result && result[0] && result[1]) {
-      events[result[0]] = result[1]
-    }
-    console.log(`Page ${count}/${total} scanned`)
-    count++
-  }
-  return events
-}
+// async function parseOnePerformance(elem) {
+//   let response = await getJSON(`${elem.link}/performances`, (error, response) => {
+//     if (error) {
+//       throw new Error(`Error while parsing ${elem.link}/performances`)
+//     }
+//     return response
+//   })
+//   if (
+//     response &&
+//     response.items[0] &&
+//     /Avant-première jeunes/.test(response.items[0].content.performance.mentions[0])
+//   ) {
+//     let title = striptags(elem.title).replace('&#8203;', '')
+//     return [title, elem.link + '/performances']
+//   }
+//   return null
+// }
 
 async function getPerformances() {
-  console.log(`Scanning Garnier's performances...`)
-  let events1 = await getPerformancesFromVenue(config.PERF_LIST_PAGE_GARNIER)
-  console.log(`Scanning Bastille's performances...`)
-  let events2 = await getPerformancesFromVenue(config.PERF_LIST_PAGE_BASTILLE)
-  return Object.assign(events1, events2)
+  console.log(`Scanning Avant-Première performances...`)
+  let response = await getJSON(config.PERF_LIST_PAGE, async function (err, res) {
+    if (err)
+      throw new Error(`Error while parsing ${config.PERF_LIST_PAGE}`)
+    return res
+  })
+  let events = {}
+  for (let elem of response.datas) {
+    // Get title and remove all HTML tags when needed
+    let title = elem.title.replace(/(<([^>]+)>)/gi, "")
+    // Build performances URLs
+    let perfURL = `${elem.link}/performances`
+
+    let result = [title, perfURL]
+    events[result[0]] = result[1]
+  }
+  console.log('All Avant-Première retrieved ✅')
+  return events
 }
 
 async function getLink(performances) {
