@@ -4,6 +4,7 @@ import inputs from './functions/getInputs.js'
 import utils from './functions/utils.js'
 import event from './functions/parseEvents.js'
 import fetch from 'node-fetch'
+import config from './config.js'
 
 (async () => {
   // Get avant-premiere links
@@ -16,8 +17,6 @@ import fetch from 'node-fetch'
     console.log('Error while parsing performance pages')
     process.exit(1)
   }
-
-  // process.env.OPERA_PERF_LINK = 'https://www.operadeparis.fr/saison-22-23/opera/salome/performances'
 
   // Get credentials
   try {
@@ -74,20 +73,35 @@ import fetch from 'node-fetch'
 
   let response = await fetch(process.env.OPERA_PERF_LINK)
   let data = await response.json()
+  const productId = data.info.secutix_id
+
+  let condition = config.ENVIRONMENT === 'DEV' ?
+    iterations < 25 :
+    data.items[0].template !== 'available'
 
   // Repeat until booking available
-  // ⚠️ ❌ TO CHANGE
-  while (data.items[0].template === 'available' && iterations < 20) {
-    // CHANGE
-    response = await fetch(process.env.OPERA_PERF_LINK)
-    data = await response.json()
+  while (condition) {
+    // METHOD 1
+    // response = await fetch(process.env.OPERA_PERF_LINK)
+    // data = await response.json()
+
+    // METHOD 2 ⚠️ we still have to get the final link once it is found
+    response = await fetch(`https://billetterie.operadeparis.fr/secured/selection/event/date?productId=${productId}`)
+    data = await response.text()
+    // If a button contains the Avant-Première date, this means that we can access the booking page
+    if (data.includes(`data-date=${process.env.OPERA_PERF_DATE}`)) {
+      console.log('Link is released')
+    }
     iterations++
     if (iterations % 10 === 0) {
       date = utils.getRefreshRate(date)
     }
   }
 
-  const foundLink = data.items[1].content.block.buttons[1].url
+  const foundLink = config.ENVIRONMENT === 'DEV' ?
+    data.items[1].content.block.buttons[1].url :
+    data.items[0].content.block.buttons[0].url
+
   console.log(foundLink)
   console.log('Found it ! Getting you there...')
 

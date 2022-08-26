@@ -1,25 +1,33 @@
 import config from '../config.js'
 import getJSON from 'get-json'
-import striptags from 'striptags'
 import inquirer from 'inquirer'
 
-// async function parseOnePerformance(elem) {
-//   let response = await getJSON(`${elem.link}/performances`, (error, response) => {
-//     if (error) {
-//       throw new Error(`Error while parsing ${elem.link}/performances`)
-//     }
-//     return response
-//   })
-//   if (
-//     response &&
-//     response.items[0] &&
-//     /Avant-première jeunes/.test(response.items[0].content.performance.mentions[0])
-//   ) {
-//     let title = striptags(elem.title).replace('&#8203;', '')
-//     return [title, elem.link + '/performances']
-//   }
-//   return null
-// }
+// Exemple of string returned by the API: "du 23 janv. au 24 févr. 2023"
+// we extract the number, month and year then get timestamp
+function getStartTimestamp(str) {
+  const monthTable = {
+    'janv.': 'jan',
+    'févr.': 'feb',
+    'mars': 'mar',
+    'avril': 'april',
+    'mai': 'may',
+    'juin': 'june',
+    'juil.': 'july',
+    'août': 'aug',
+    'sept.': 'sept',
+    'oct.': 'oct',
+    'nov.': 'nov',
+    'déc.': 'dec'
+  }
+  const words = str.split(' ')
+  const day = words[1]
+  const month = monthTable[words[2]]
+  const year = words[words.length - 1]
+  let date = new Date(`${day} ${month} ${year}`)
+  const offset = date.getTimezoneOffset()
+  date = new Date(date.getTime() - (offset * 60 * 1000))
+  return date.toISOString().split('T')[0]
+}
 
 async function getPerformances() {
   console.log(`Scanning Avant-Première performances...`)
@@ -34,9 +42,12 @@ async function getPerformances() {
     let title = elem.title.replace(/(<([^>]+)>)/gi, "")
     // Build performances URLs
     let perfURL = `${elem.link}/performances`
+    let startDate = getStartTimestamp(elem.start_end_dates)
 
-    let result = [title, perfURL]
-    events[result[0]] = result[1]
+    events[title] = JSON.stringify({
+      url: perfURL,
+      start: startDate
+    })
   }
   console.log('All Avant-Première retrieved ✅')
   return events
@@ -54,7 +65,8 @@ async function getLink(performances) {
         }
       ])
       .then((answers) => {
-        process.env.OPERA_PERF_LINK = performances[answers.performance]
+        process.env.OPERA_PERF_LINK = JSON.parse(performances[answers.performance]).url
+        process.env.OPERA_PERF_DATE = JSON.parse(performances[answers.performance]).start
         resolve()
       })
   })
