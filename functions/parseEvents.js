@@ -1,6 +1,7 @@
 import config from '../config.js'
 import getJSON from 'get-json'
 import inquirer from 'inquirer'
+import log from './displayMessages.js'
 
 // Exemple of string returned by the API: "du 23 janv. au 24 févr. 2023"
 // we extract the number, month and year then get timestamp
@@ -30,7 +31,7 @@ function getStartTimestamp(str) {
 }
 
 async function getPerformances() {
-  console.log(`Scanning Avant-Première performances...`)
+  log.dim('Parsing performances...')
   let response = await getJSON(config.PERF_LIST_PAGE, async function (err, res) {
     if (err)
       throw new Error(`Error while parsing ${config.PERF_LIST_PAGE}`)
@@ -49,7 +50,7 @@ async function getPerformances() {
       start: startDate
     })
   }
-  console.log('All Avant-Première retrieved ✅')
+  console.log('\x1b[32m%s\x1b[0m', 'All Avant-Première retrieved')
   return events
 }
 
@@ -74,5 +75,6 @@ async function getLink(performances) {
 
 export default {
   getPerformances,
-  getLink
+  getLink,
+  getStartTimestamp
 }

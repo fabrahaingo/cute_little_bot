@@ -5,20 +5,32 @@ import utils from './functions/utils.js'
 import event from './functions/parseEvents.js'
 import fetch from 'node-fetch'
 import config from './config.js'
+import log from './functions/displayMessages.js'
 
-(async () => {
-  // Get avant-premiere links
+// function cookiesToString() {
+//   let result = ''
+//   const mandatory_cookies = ['stx_contact_ONP_Internet_v1', 'STX_SESSION']
+//   for (let cookie of JSON.parse(process.env.COOKIES)) {
+//     if (mandatory_cookies.includes(cookie.name)) {
+//       result += `${cookie.name}=${cookie.value}; `
+//     }
+//   }
+//   return result
+// }
+
+async function getAndSelectPerf() {
   try {
     console.log('Getting avant-premières of 22-23 season...')
     let performances = await event.getPerformances()
     await event.getLink(performances)
   } catch (error) {
     console.log(error)
-    console.log('Error while parsing performance pages')
+    log.err(`Error while parsing performance pages: ${error.message}`)
     process.exit(1)
   }
+}
 
-  // Get credentials
+async function getCredentials() {
   try {
     if (!process.env.OPERA_USERNAME || !process.env.OPERA_PASSWORD) {
       console.log(
@@ -32,27 +44,35 @@ import config from './config.js'
       }
     }
   } catch (error) {
-    console.log('Error while getting your credentials')
+    console.log('\x1b[31m%s\x1b[0m', `Error while getting your credentials: ${error.message}`)
     process.exit(1)
   }
+}
 
-  // Get performance link
-  let browser
+async function startPuppeteer() {
   try {
-    browser = await puppeteer.launch({
+    let browser = await puppeteer.launch({
       headless: false,
       defaultViewport: null
     })
+    let page = await browser.newPage()
+    page.setDefaultTimeout(0)
+    return page
   } catch (error) {
-    console.log('Error while getting performance link')
+    console.log('\x1b[31m%s\x1b[0m', `Error while getting performance link: ${error.message}`)
     process.exit(1)
   }
+}
 
-  let page
-  await browser.newPage().then((res) => {
-    page = res
-    page.setDefaultTimeout(0)
-  })
+(async () => {
+  // Get avant-premiere links
+  await getAndSelectPerf()
+
+  // Get credentials
+  await getCredentials()
+
+  // Get performance link
+  const page = await startPuppeteer()
 
   try {
     console.log('Trying to login')
@@ -74,6 +94,13 @@ import config from './config.js'
   let response = await fetch(process.env.OPERA_PERF_LINK)
   let data = await response.json()
   const productId = data.info.secutix_id
+  // const cookieStr = cookiesToString()
+  if (config.ENVIRONMENT === 'DEV') {
+    const day = data.items[1].content.performance.dayNumber
+    const month = data.items[1].content.performance.month
+    const year = new Date().getFullYear()
+    process.env.OPERA_PERF_DATE = event.getStartTimestamp(`le ${day} ${month} ${year}`)
+  }
 
   let condition = config.ENVIRONMENT === 'DEV' ?
     iterations < 25 :
@@ -81,19 +108,44 @@ import config from './config.js'
 
   // Repeat until booking available
   while (condition) {
+
     // METHOD 1
     // response = await fetch(process.env.OPERA_PERF_LINK)
     // data = await response.json()
 
     // METHOD 2 ⚠️ we still have to get the final link once it is found
-    response = await fetch(`https://billetterie.operadeparis.fr/secured/selection/event/date?productId=${productId}`)
-    data = await response.text()
-    // If a button contains the Avant-Première date, this means that we can access the booking page
-    if (data.includes(`data-date=${process.env.OPERA_PERF_DATE}`)) {
+    // response = await fetch(`https://billetterie.operadeparis.fr/secured/selection/event/date?productId=${productId}`, {
+    //   method: 'get',
+    //   headers: {
+    //     'user-agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0',
+    //     cookie: cookieStr,
+    //     'Host': 'billetterie.operadeparis.fr'
+    //   }
+    // })
+    // data = await response.text()
+    // if (data.includes(`data-date="${process.env.OPERA_PERF_DATE}"`)) {
+    //   console.log('Link is released')
+    //   break
+    // }
+
+    // METHOD 3: same as previous method, but using puppeteer to avoid bot blocking
+    await page.goto(`https://billetterie.operadeparis.fr/secured/selection/event/date?productId=${productId}`, {
+      waitUntil: 'domcontentloaded'
+    })
+    const foundDate = await page.evaluate(() => {
+      const events = document.getElementsByClassName('date_time_venue')
+      return events[0].getAttribute('data-date')
+    })
+    if (foundDate === process.env.OPERA_PERF_DATE) {
       console.log('Link is released')
+      // Retrieve link in page
+      break
     }
+
     iterations++
     if (iterations % 10 === 0) {
+      // let str = await data.replace(/[\u0000-\u001F\u007F-\u009F]/g, "")
+      // console.log(str)
       date = utils.getRefreshRate(date)
     }
   }
