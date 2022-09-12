@@ -50,7 +50,7 @@ async function getPerformances() {
       start: startDate
     })
   }
-  console.log('\x1b[32m%s\x1b[0m', 'All Avant-Première retrieved')
+  log.ok('All Avant-Première retrieved\n')
   return events
 }
 

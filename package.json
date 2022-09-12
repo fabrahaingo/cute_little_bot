@@ -7,6 +7,8 @@
   "dependencies": {
     "get-json": "^1.0.1",
     "inquirer": "^9.1.0",
+    "moment": "^2.29.4",
+    "moment-timezone": "^0.5.37",
     "node-fetch": "^3.2.10",
     "puppeteer": "^16.2.0",
     "striptags": "^3.2.0"

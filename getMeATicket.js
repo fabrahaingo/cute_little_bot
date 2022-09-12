@@ -6,21 +6,39 @@ import event from './functions/parseEvents.js'
 import fetch from 'node-fetch'
 import config from './config.js'
 import log from './functions/displayMessages.js'
+import moment from 'moment'
+import 'moment-timezone'
 
-// function cookiesToString() {
-//   let result = ''
-//   const mandatory_cookies = ['stx_contact_ONP_Internet_v1', 'STX_SESSION']
-//   for (let cookie of JSON.parse(process.env.COOKIES)) {
-//     if (mandatory_cookies.includes(cookie.name)) {
-//       result += `${cookie.name}=${cookie.value}; `
-//     }
-//   }
-//   return result
-// }
+async function waitForLaunch() {
+  let waitMs = config.WAIT_TIME * 1000
+  let future = moment()
+    .startOf('day')
+    .hour(12)
+    .minute(0)
+  let in30seconds = () => moment().add(config.WAIT_TIME, 'seconds')
+  let left = moment.duration(future.diff(in30seconds(), 'milliseconds'))
+
+  if (left.hours() < 0) {
+    log.err(`You missed 12h (opening hour). Please try again another day.`)
+    process.exit(1)
+  }
+
+  while (future.diff(moment()) > waitMs) {
+    await utils.delay(1000)
+    log.rm()
+    // writing in yellow
+    log.warn(`Program will start in ${left.hours() ? `${left.hours()} h `: ''}${left.minutes() ? `${left.minutes()} min and ` : ''}${left.seconds()} sec`)
+    left = moment.duration(future.diff(in30seconds()), 'milliseconds')
+  }
+
+  log.rm()
+  log.ok('Starting to refresh\n')
+  return
+}
 
 async function getAndSelectPerf() {
   try {
-    console.log('Getting avant-premières of 22-23 season...')
+    log.dim('Getting avant-premières of 22-23 season...')
     let performances = await event.getPerformances()
     await event.getLink(performances)
   } catch (error) {
@@ -75,18 +93,18 @@ async function startPuppeteer() {
   const page = await startPuppeteer()
 
   try {
-    console.log('Trying to login')
+    log.dim('\nTrying to login')
     await login.login(page)
   } catch (error) {
-    console.log(`Login failed (timeout or wrong credentials): ${error}`)
+    log.err(`Login failed (timeout or wrong credentials): ${error}`)
     process.exit(1)
   }
 
-  console.log('Logged in successfully. Waiting for the performance link to be released...')
+  log.ok('Logged in successfully.\n')
   // At this point, the user is logged in
   // Chromium is oppened and ready to perform actions for the user
 
-  console.log(`Starting refreshes of ${process.env.OPERA_PERF_LINK}`)
+  log.dim(`Checking time to run the program...\n`)
 
   let iterations = 0
   let date = Date.now()
@@ -106,28 +124,10 @@ async function startPuppeteer() {
     iterations < 25 :
     data.items[0].template !== 'available'
 
+  await waitForLaunch()
+
   // Repeat until booking available
   while (condition) {
-
-    // METHOD 1
-    // response = await fetch(process.env.OPERA_PERF_LINK)
-    // data = await response.json()
-
-    // METHOD 2 ⚠️ we still have to get the final link once it is found
-    // response = await fetch(`https://billetterie.operadeparis.fr/secured/selection/event/date?productId=${productId}`, {
-    //   method: 'get',
-    //   headers: {
-    //     'user-agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0',
-    //     cookie: cookieStr,
-    //     'Host': 'billetterie.operadeparis.fr'
-    //   }
-    // })
-    // data = await response.text()
-    // if (data.includes(`data-date="${process.env.OPERA_PERF_DATE}"`)) {
-    //   console.log('Link is released')
-    //   break
-    // }
-
     // METHOD 3: same as previous method, but using puppeteer to avoid bot blocking
     await page.goto(`https://billetterie.operadeparis.fr/secured/selection/event/date?productId=${productId}`, {
       waitUntil: 'domcontentloaded'
@@ -136,8 +136,10 @@ async function startPuppeteer() {
       const events = document.getElementsByClassName('date_time_venue')
       return events[0].getAttribute('data-date')
     })
+
+    // if ticket is available
     if (foundDate === process.env.OPERA_PERF_DATE) {
-      console.log('Link is released')
+      log.ok('Link is released')
       // Retrieve link in page
       break
     }
@@ -146,7 +148,7 @@ async function startPuppeteer() {
     if (iterations % 10 === 0) {
       // let str = await data.replace(/[\u0000-\u001F\u007F-\u009F]/g, "")
       // console.log(str)
-      date = utils.getRefreshRate(date)
+      date = utils.getRefreshRate(date, iterations)
     }
   }
 
@@ -154,8 +156,7 @@ async function startPuppeteer() {
     data.items[1].content.block.buttons[1].url :
     data.items[0].content.block.buttons[0].url
 
-  console.log(foundLink)
-  console.log('Found it ! Getting you there...')
+  console.log('Opening link and trying to book...')
 
   const params = new URLSearchParams(foundLink.substring(foundLink.indexOf('?'), foundLink.length))
   const perfId = params.get('id')

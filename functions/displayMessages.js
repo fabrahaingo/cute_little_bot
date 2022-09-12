@@ -15,9 +15,15 @@ function dim(msg) {
     console.log('\x1b[2m%s\x1b[0m', msg)
 }
 
+function rm() {
+    process.stdout.moveCursor(0, -1)
+    process.stdout.clearLine(1)
+}
+
 export default {
     ok,
     err,
     warn,
-    dim
+    dim,
+    rm
 }
