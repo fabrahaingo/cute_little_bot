@@ -9,5 +9,6 @@ export default {
     'body > div > div.content-wrapper > div > section.personalarea__block--head.backToTop-visibilityTrigger',
   SUCCESS_SELECTOR_2:
     'body > header > div > div > div.Header__actions > div.Header__account-only-mobile > div > a > span',
-  WAIT_TIME: 30
+  WAIT_TIME: 30,
+  TICKETS_TO_BOOK: 2
 }

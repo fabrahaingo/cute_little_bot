@@ -13,12 +13,13 @@ async function waitForLaunch() {
   let waitMs = config.WAIT_TIME * 1000
   let future = moment()
     .startOf('day')
-    .hour(12)
-    .minute(0)
+    .hour(18)
+    .minute(4)
   let in30seconds = () => moment().add(config.WAIT_TIME, 'seconds')
   let left = moment.duration(future.diff(in30seconds(), 'milliseconds'))
 
   if (left.hours() < 0) {
+    log.rm()
     log.err(`You missed 12h (opening hour). Please try again another day.`)
     process.exit(1)
   }
@@ -82,93 +83,179 @@ async function startPuppeteer() {
   }
 }
 
-(async () => {
-  // Get avant-premiere links
-  await getAndSelectPerf()
+function getCategories() {
+  return {
+    optima: 0,
+    first: 1,
+    second: 2,
+    third: 3,
+    fourth: 4,
+    fifth: 5,
+    sixth: 6,
+    seventh: 7,
+    eigth: 8,
+    ninth: 9,
+    tenth: 10
+  }
+}
 
-  // Get credentials
-  await getCredentials()
-
-  // Get performance link
-  const page = await startPuppeteer()
-
-  try {
-    log.dim('\nTrying to login')
-    await login.login(page)
-  } catch (error) {
-    log.err(`Login failed (timeout or wrong credentials): ${error}`)
+async function selectTicket(page, ticketsToBook) {
+  if (isNaN(ticketsToBook)) {
+    log.err('Tickets to book should be a number')
     process.exit(1)
   }
+  const categories = getCategories()
+  const remainingPlaces = await page.evaluate(() => {
+    const categories = {
+      optima: 0,
+      first: 1,
+      second: 2,
+      third: 3,
+      fourth: 4,
+      fifth: 5,
+      sixth: 6,
+      seventh: 7,
+      eigth: 8,
+      ninth: 9,
+      tenth: 10
+    }
+    let remaining = {}
+    for (let category of Object.keys(categories)) {
+      if (document.getElementById(`eventFormData[${categories[category]}].quantity`))
+        remaining[category] = Object.keys(document.getElementById(`eventFormData[${categories[category]}].quantity`).children).length - 1
+    }
+    return remaining
+  })
 
-  log.ok('Logged in successfully.\n')
-  // At this point, the user is logged in
-  // Chromium is oppened and ready to perform actions for the user
+  let reserved = false
 
-  log.dim(`Checking time to run the program...\n`)
-
-  let iterations = 0
-  let date = Date.now()
-
-  let response = await fetch(process.env.OPERA_PERF_LINK)
-  let data = await response.json()
-  const productId = data.info.secutix_id
-  // const cookieStr = cookiesToString()
-  if (config.ENVIRONMENT === 'DEV') {
-    const day = data.items[1].content.performance.dayNumber
-    const month = data.items[1].content.performance.month
-    const year = new Date().getFullYear()
-    process.env.OPERA_PERF_DATE = event.getStartTimestamp(`le ${day} ${month} ${year}`)
-  }
-
-  let condition = config.ENVIRONMENT === 'DEV' ?
-    iterations < 25 :
-    data.items[0].template !== 'available'
-
-  await waitForLaunch()
-
-  // Repeat until booking available
-  while (condition) {
-    // METHOD 3: same as previous method, but using puppeteer to avoid bot blocking
-    await page.goto(`https://billetterie.operadeparis.fr/secured/selection/event/date?productId=${productId}`, {
-      waitUntil: 'domcontentloaded'
-    })
-    const foundDate = await page.evaluate(() => {
-      const events = document.getElementsByClassName('date_time_venue')
-      return events[0].getAttribute('data-date')
-    })
-
-    // if ticket is available
-    if (foundDate === process.env.OPERA_PERF_DATE) {
-      log.ok('Link is released')
-      // Retrieve link in page
+  for (let cat of Object.keys(remainingPlaces)) {
+    if (remainingPlaces[cat] >= ticketsToBook) {
+      page.select(`#eventFormData\\[${categories[cat]}\\]\\.quantity`, ticketsToBook.toString())
+      reserved = true
       break
     }
-
-    iterations++
-    if (iterations % 10 === 0) {
-      // let str = await data.replace(/[\u0000-\u001F\u007F-\u009F]/g, "")
-      // console.log(str)
-      date = utils.getRefreshRate(date, iterations)
-    }
   }
 
-  const foundLink = config.ENVIRONMENT === 'DEV' ?
-    data.items[1].content.block.buttons[1].url :
-    data.items[0].content.block.buttons[0].url
+  if (reserved === false) {
+    log.err(`Pas assez de places disponibles, tentative avec ${ticketsToBook} places...`)
+    await selectTicket(page, ticketsToBook - 1)
 
-  console.log('Opening link and trying to book...')
+    if (ticketsToBook === 0) {
+      log.err('Il ne reste aucune place pour cette représentation')
+      process.exit(1)
+    }
+  } else {
+    log.ok(`${ticketsToBook} places ont été réservées avec succès !`)
+  }
+}
 
-  const params = new URLSearchParams(foundLink.substring(foundLink.indexOf('?'), foundLink.length))
-  const perfId = params.get('id')
+async function checkLinkReleased(condition, page, productId) {
+  try {
+    let iterations = 0
+    let date = Date.now()
+    while (condition) {
+      // METHOD 3: same as previous method, but using puppeteer to avoid bot blocking
+      await page.goto(`https://billetterie.operadeparis.fr/secured/selection/event/date?productId=${productId}`, {
+        waitUntil: 'domcontentloaded'
+      })
+      const foundDate = await page.evaluate(() => {
+        const events = document.getElementsByClassName('date_time_venue')
+        return events[0].getAttribute('data-date')
+      })
 
-  const newLink = `https://billetterie.operadeparis.fr/secured/selection/event/seat?perfId=${perfId}&lang=fr&table=1`
+      // if ticket is available
+      if (foundDate === process.env.OPERA_PERF_DATE) {
+        log.ok('Link is released')
+        // Retrieve link in page
+        break
+      }
 
-  await page.bringToFront()
+      iterations++
+      if (iterations % 10 === 0) {
+        // let str = await data.replace(/[\u0000-\u001F\u007F-\u009F]/g, "")
+        // console.log(str)
+        date = utils.getRefreshRate(date, iterations)
+      }
+    }
+  }
+  catch (err) {
+    console.log(err.message)
+    throw new Error('Catcha page is shown')
+    // handle captcha
+  }
+}
 
-  await page.goto(newLink, {
-    waitUntil: 'networkidle0'
-  })
-  await page.select('#eventFormData\\[0\\]\\.quantity', '2')
-  await page.click('#book', { clickCount: 1 })
-  //return 0
+(async () => {
+  try {
+    // Get avant-premiere links
+    await getAndSelectPerf()
+
+    // Get credentials
+    await getCredentials()
+
+    // Get performance link
+    const page = await startPuppeteer()
+
+    try {
+      log.dim('\nTrying to login')
+      await login.login(page)
+    } catch (error) {
+      log.err(`Login failed (timeout or wrong credentials): ${error}`)
+      process.exit(1)
+    }
+
+    log.ok('Logged in successfully.\n')
+    // At this point, the user is logged in
+    // Chromium is oppened and ready to perform actions for the user
+
+    log.dim(`Checking time to run the program...\n`)
+
+    let response = await fetch(process.env.OPERA_PERF_LINK)
+    let data = await response.json()
+    const productId = data.info.secutix_id
+    // const cookieStr = cookiesToString()
+    if (config.ENVIRONMENT === 'DEV') {
+      const day = data.items[1].content.performance.dayNumber
+      const month = data.items[1].content.performance.month
+      const year = new Date().getFullYear()
+      process.env.OPERA_PERF_DATE = event.getStartTimestamp(`le ${day} ${month} ${year}`)
+    }
+
+    let condition = data.items[0].template !== 'available'
+
+    await waitForLaunch()
+
+    // Repeat until booking available
+    await checkLinkReleased(condition, page, productId)
+      .then(async () => {
+        const foundLink = config.ENVIRONMENT === 'DEV' ?
+        data.items[1].content.block.buttons[1].url :
+        data.items[0].content.block.buttons[0].url
+
+        console.log('Opening link and trying to book...')
+
+        const params = new URLSearchParams(foundLink.substring(foundLink.indexOf('?'), foundLink.length))
+        const perfId = params.get('id')
+
+        const newLink = `https://billetterie.operadeparis.fr/secured/selection/event/seat?perfId=${perfId}&lang=fr&table=1`
+
+        await page.bringToFront()
+
+        await page.goto(newLink, {
+          waitUntil: 'networkidle0'
+        })
+
+        await selectTicket(page, config.TICKETS_TO_BOOK)
+        await page.click('#book', { clickCount: 1 })
+      })
+      .catch((err) => {
+        log.err(err.message)
+      })
+
+    //return 0
+  }
+  catch (err) {
+    console.log(err)
+  }
 })()
