@@ -13,14 +13,14 @@ async function waitForLaunch() {
   let waitMs = config.WAIT_TIME * 1000
   let future = moment()
     .startOf('day')
-    .hour(18)
-    .minute(4)
+    .hour(12)
+    .minute(0)
   let in30seconds = () => moment().add(config.WAIT_TIME, 'seconds')
   let left = moment.duration(future.diff(in30seconds(), 'milliseconds'))
 
   if (left.hours() < 0) {
     log.rm()
-    log.err(`You missed 12h (opening hour). Please try again another day.`)
+    log.err(`You missed ${future.hour()}:${future.minute()} (opening hour). Please try again another day.`)
     process.exit(1)
   }
 
