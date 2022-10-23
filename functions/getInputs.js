@@ -41,7 +41,25 @@ async function getCredentials() {
   })
 }
 
+async function askUserToContinue() {
+  return new Promise((resolve) => {
+    inquirer
+      .prompt([
+        {
+          type: 'confirm',
+          name: 'continue',
+          message: 'La page de captcha est ouverte, veuillez le résoudre, attendre la fin de la file d\'attente et appuyer sur entrée pour continuer',
+          default: [true]
+        }
+      ])
+      .then(answers => {
+        resolve(answers.continue)
+      })
+  })
+}
+
 export default {
   keepCredentials,
-  getCredentials
+  getCredentials,
+  askUserToContinue
 }
