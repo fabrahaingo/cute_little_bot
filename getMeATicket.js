@@ -179,7 +179,7 @@ async function checkCaptchaShown(page, productId) {
     let date = Date.now();
     let captcha = false;
     while (captcha === false) {
-      // link file d'attente: https://billetterie.operadeparis.fr/secured/selection/event/date?productId=${productId}
+      // link file d'attente: https://access.operadeparis.fr/pkpcontroller/wp/onp/index_fr.html
       await page.goto(
         `https://billetterie.operadeparis.fr/secured/selection/event/date?productId=${productId}`,
         {
