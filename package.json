@@ -1,30 +1,27 @@
 {
-  "name": "booking_bot",
-  "version": "1.0.0",
-  "description": "A little bot to get your Avant-Premiere tickets way more easily",
-  "main": "getMeATicket.js",
-  "type": "module",
-  "dependencies": {
-    "get-json": "^1.0.1",
-    "inquirer": "^9.1.0",
-    "moment": "^2.29.4",
-    "moment-timezone": "^0.5.37",
-    "node-fetch": "^3.2.10",
-    "puppeteer": "^16.2.0",
-    "striptags": "^3.2.0"
-  },
-  "scripts": {
-    "test": "node getMeATicket.js",
-    "start": "node getMeATicket.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/fabrahaingo/booking_bot.git"
-  },
-  "author": "frahaing",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/fabrahaingo/booking_bot/issues"
-  },
-  "homepage": "https://github.com/fabrahaingo/booking_bot#readme"
+	"name": "booking_bot",
+	"version": "1.0.0",
+	"description": "A little bot to get your Avant-Premiere tickets way more easily",
+	"main": "bookTickets.js",
+	"type": "module",
+	"dependencies": {
+		"inquirer": "^9.1.0",
+		"moment": "^2.29.4",
+		"moment-timezone": "^0.5.37",
+		"node-fetch": "^3.3.0",
+		"puppeteer": "^16.2.0"
+	},
+	"scripts": {
+		"start": "node bookTickets.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/fabrahaingo/booking_bot.git"
+	},
+	"author": "frahaing",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/fabrahaingo/booking_bot/issues"
+	},
+	"homepage": "https://github.com/fabrahaingo/booking_bot#readme"
 }
