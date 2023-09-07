@@ -39,7 +39,12 @@ async function refreshUntilTicketsAvailable() {
 				if (data.data?.categories[0]?.seatsAvailability === 0) {
 					log.err('This performance is unfortunately sold out.')
 					process.exit(1)
+				} else {
+					log.dim(
+						`There are still ${data.data?.categories[0]?.seatsAvailability} tickets available.`
+					)
 				}
+				perf_details = data
 				return data.status_code
 			})
 			.catch((err) => {

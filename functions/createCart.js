@@ -24,7 +24,16 @@ async function createCart() {
 	})
 		.then((res) => res.json())
 		.then((data) => {
-			process.env.OPERA_CART_ID = data.data.cartId
+			if (data?.status_code === 400 && data?.code?.includes('limit')) {
+				log.err('You have reached the limit of tickets you can book.')
+				process.exit(1)
+			} else if (data?.status_code !== 201 || data?.status_code !== 200) {
+				if (data.code) {
+					log.err(`Error while creating the cart: ${data.code}`)
+					process.exit(1)
+				}
+			}
+			process.env.OPERA_CART_ID = data?.data?.cartId
 		})
 		.catch((err) => {
 			log.err('Could not create the cart nor retrieve its id.')

@@ -1,6 +1,7 @@
+import dotenv from 'dotenv'
+dotenv.config()
 import puppeteer from 'puppeteer'
 import config from './config.js'
-import inquirer from 'inquirer'
 import moment from 'moment'
 import 'moment-timezone'
 
@@ -31,10 +32,10 @@ async function waitForLaunch() {
 		process.exit(1)
 	}
 
-	while (endTime.diff(moment()) > config.OPENING_WAIT * 1000) {
+	while (moment() < startTime) {
 		// wait for 1 second in nodejs
 		await wait(1000)
-		timeLeft = moment.duration(startTime.diff(moment()), 'milliseconds')
+		timeLeft = moment.duration(endTime.diff(moment()), 'milliseconds')
 		log.rm()
 		// writing in yellow
 		log.warn(
@@ -91,23 +92,38 @@ async function openBrowserAndSetCookie() {
 	return page
 }
 
+// Using this function should trigger the waiting line
+// If accessed before the opening, this should allow to finish it in advance
+async function navigateToCartPage(page) {
+	await page
+		.goto(`https://mobile.operadeparis.fr/baseCheckout/redirect`)
+		.catch((err) => {
+			log.err('Error while navigating to checkout page')
+			console.log(err)
+		})
+	return
+}
+
 ;(async () => {
 	try {
-		// Get avant-premiere links
-		await getAndSelectPerf()
 		// Either ask for credentials or use saved ones
 		await getCredentials()
+		// Get the session token needed to access the cart page
+		await getSessionToken()
+		// Get avant-premiere links
+		await getAndSelectPerf()
 		// Get the perfId of the performance we want to book
 		await getPerfId()
 
-		//! Change perfId for testing
-		//! process.env.OPERA_PERF_ID = '10228308688210'
-		//! process.env.OPERA_PERF_ID = '10228308838081'
+		//? Change perfId for testing
+		//? process.env.OPERA_PERF_ID = '10228309277980' // Romeo et Juliette
+		//? process.env.OPERA_PERF_ID = '10228309407392' // Signes 21 juin
 
-		// Get the session token needed to access the cart page
-		await getSessionToken()
 		// open browser + set cookie in advance to save time
 		const page = await openBrowserAndSetCookie()
+		// open performance page to finish line in advance
+		await navigateToCartPage(page)
+
 		// Wait for the opening to avoid spamming the server
 		await waitForLaunch()
 		// Wait for tickets to be available

@@ -3,48 +3,48 @@ import fetch from 'node-fetch'
 import inquirer from 'inquirer'
 import log from './customLogs.js'
 
-// Exemple of string returned by the API: "du 23 janv. au 24 févr. 2023"
-// we extract the number, month and year then get timestamp
-function getOpeningTimestamp(str) {
-	const monthTable = {
-		'janv.': 'jan',
-		'févr.': 'feb',
-		mars: 'mar',
-		avril: 'april',
-		mai: 'may',
-		juin: 'june',
-		'juil.': 'july',
-		août: 'aug',
-		'sept.': 'sept',
-		'oct.': 'oct',
-		'nov.': 'nov',
-		'déc.': 'dec',
-	}
-	const words = str.split(' ')
-	let day = undefined
-	let month = undefined
-	let year = undefined
+function checkIfPast(date) {
+	const now = new Date()
+	const perfDate = new Date(date)
+	return perfDate < now
+}
 
-	// we loop through the words to find the day, month and year
-	for (let i = 0; i < words.length; i++) {
-		if (
-			day === undefined &&
-			month === undefined &&
-			Number(words[i]) > 0 &&
-			Number(words[i]) < 2000
-		) {
-			day = words[i]
-			month = monthTable[words[i + 1]]
+async function getFormattedDate(id) {
+	let perfList = await fetch(
+		`https://onp-api.operadeparis.fr/api/shows/${id}/performances`,
+		{
+			headers: {
+				Accept: 'application/vnd.onp.v1+json',
+				Authorization: process.env.AUTH_TOKEN,
+			},
 		}
-		if (Number(words[i]) > 2000) {
-			year = words[i]
-		}
+	)
+	perfList = await perfList.json()
+	// perfList has an array of performances stored in the "data" key
+	// return true if at least one of the performances is a field called "isYouthPreview" equal to true
+	const hasYouthPreview = perfList.data?.some((perf) => perf.isYouthPreview)
+	if (hasYouthPreview) {
+		// format the field called "date" (which is in the form of "2023-04-20 20:00:00") to get the date with format "le jour mois année à heure(h)minute"
+		return perfList.data
+			.filter((perf) => perf.isYouthPreview)
+			.map((perf) => {
+				if (checkIfPast(perf.date)) {
+					return '\x1b[31mévénement passé\x1b[0m'
+				}
+				const date = new Date(perf.date)
+				const day = date.getDate()
+				const month = date.toLocaleString('fr-FR', { month: 'long' })
+				const year = date.getFullYear()
+				const hour = date.getHours()
+				const minute = date.getMinutes()
+				// handle the case where the minute is 0
+				if (minute === 0) {
+					return `\x1b[2m(le ${day} ${month} ${year} à ${hour}h)\x1b[0m`
+				}
+				return `\x1b[2m(le ${day} ${month} ${year} à ${hour}h${minute})\x1b[0m`
+			})
 	}
-
-	let date = new Date(`${day} ${month} ${year}`)
-	const offset = date.getTimezoneOffset()
-	date = new Date(date.getTime() - offset * 60 * 1000)
-	return date.toISOString().split('T')[0]
+	return '\x1b[31mévénement passé ou indisponible\x1b[0m'
 }
 
 async function getPerformances() {
@@ -63,14 +63,11 @@ async function getPerformances() {
 		let title = elem.title.replace(/(<([^>]+)>)/gi, '')
 		// Build performances URLs
 		let eventId = elem.id
-		let eventDate = getOpeningTimestamp(elem.start_end_dates)
-		let formattedDate = new Intl.DateTimeFormat('en-US', {
-			dateStyle: 'medium',
-		}).format(new Date(eventDate))
+		let formattedDate = await getFormattedDate(eventId)
 
-		events[`${title} - ${formattedDate}`] = JSON.stringify({
+		events[`${title} ${formattedDate}`] = JSON.stringify({
 			eventId: eventId,
-			start: eventDate,
+			start: formattedDate,
 		})
 	}
 	log.ok('All Avant-Première retrieved\n')
@@ -103,5 +100,4 @@ async function getLink(performances) {
 export default {
 	getPerformances,
 	getLink,
-	getOpeningTimestamp,
 }

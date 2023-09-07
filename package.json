@@ -5,6 +5,7 @@
 	"main": "bookTickets.js",
 	"type": "module",
 	"dependencies": {
+		"dotenv": "^16.0.3",
 		"inquirer": "^9.1.0",
 		"moment": "^2.29.4",
 		"moment-timezone": "^0.5.37",

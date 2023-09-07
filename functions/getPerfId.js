@@ -2,11 +2,6 @@ import fetch from 'node-fetch'
 
 import log from './customLogs.js'
 async function getPerfId() {
-	process.env.AUTH_TOKEN =
-		'Basic ' +
-		Buffer.from(
-			process.env.OPERA_USERNAME + ':' + process.env.OPERA_PASSWORD
-		).toString('base64')
 	let event_details = await fetch(
 		`https://onp-api.operadeparis.fr/api/shows/${process.env.OPERA_EVENT_ID}/performances`,
 		{

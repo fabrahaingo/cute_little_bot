@@ -2,6 +2,13 @@ import fetch from 'node-fetch'
 import log from './customLogs.js'
 
 async function getSessionToken() {
+	// create auth token
+	process.env.AUTH_TOKEN =
+		'Basic ' +
+		Buffer.from(
+			process.env.OPERA_USERNAME + ':' + process.env.OPERA_PASSWORD
+		).toString('base64')
+
 	await fetch('https://onp-api.operadeparis.fr/api/sessions', {
 		method: 'POST',
 		headers: {

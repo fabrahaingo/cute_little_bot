@@ -1,0 +1,94 @@
+{
+	"commandline": "ffuf -w common-api-endpoints-mazen160.txt -u https://onp-api.operadeparis.fr/FUZZ -o output.txt",
+	"time": "2023-06-01T19:08:51+02:00",
+	"results": [
+		{
+			"input": { "FFUFHASH": "afb123e", "FUZZ": "docs" },
+			"position": 62,
+			"status": 200,
+			"length": 45559,
+			"words": 26480,
+			"lines": 1201,
+			"content-type": "application/json",
+			"redirectlocation": "",
+			"scraper": {},
+			"duration": 224507500,
+			"resultfile": "",
+			"url": "https://onp-api.operadeparis.fr/docs",
+			"host": "onp-api.operadeparis.fr"
+		}
+	],
+	"config": {
+		"autocalibration": false,
+		"autocalibration_keyword": "FUZZ",
+		"autocalibration_perhost": false,
+		"autocalibration_strategy": "basic",
+		"autocalibration_strings": [],
+		"colors": false,
+		"cmdline": "ffuf -w common-api-endpoints-mazen160.txt -u https://onp-api.operadeparis.fr/FUZZ -o output.txt",
+		"configfile": "",
+		"postdata": "",
+		"debuglog": "",
+		"delay": { "value": "0.00" },
+		"dirsearch_compatibility": false,
+		"extensions": [],
+		"fmode": "or",
+		"follow_redirects": false,
+		"headers": {},
+		"ignorebody": false,
+		"ignore_wordlist_comments": false,
+		"inputmode": "clusterbomb",
+		"cmd_inputnum": 100,
+		"inputproviders": [
+			{
+				"name": "wordlist",
+				"keyword": "FUZZ",
+				"value": "/Users/fabienr/ctf/tools/SecLists/Discovery/Web-Content/common-api-endpoints-mazen160.txt",
+				"template": ""
+			}
+		],
+		"inputshell": "",
+		"json": false,
+		"matchers": {
+			"IsCalibrated": false,
+			"Mutex": {},
+			"Matchers": {
+				"status": { "value": "200,204,301,302,307,401,403,405,500" }
+			},
+			"Filters": {},
+			"PerDomainFilters": {}
+		},
+		"mmode": "or",
+		"maxtime": 0,
+		"maxtime_job": 0,
+		"method": "GET",
+		"noninteractive": false,
+		"outputdirectory": "",
+		"outputfile": "output.txt",
+		"outputformat": "json",
+		"OutputSkipEmptyFile": false,
+		"proxyurl": "",
+		"quiet": false,
+		"rate": 0,
+		"recursion": false,
+		"recursion_depth": 0,
+		"recursion_strategy": "default",
+		"replayproxyurl": "",
+		"requestfile": "",
+		"requestproto": "https",
+		"scraperfile": "",
+		"scrapers": "all",
+		"sni": "",
+		"stop_403": false,
+		"stop_all": false,
+		"stop_errors": false,
+		"threads": 40,
+		"timeout": 10,
+		"url": "https://onp-api.operadeparis.fr/FUZZ",
+		"verbose": false,
+		"wordlists": [
+			"/Users/fabienr/ctf/tools/SecLists/Discovery/Web-Content/common-api-endpoints-mazen160.txt"
+		],
+		"http2": false
+	}
+}
