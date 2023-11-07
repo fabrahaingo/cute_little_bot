@@ -37,7 +37,7 @@ npm install
 
 **Run the cute little bot** about 5 minutes before tickets are released:
 ```
-node getMeATicket.js
+node bookTickets.js
 ```
 
 <br>
