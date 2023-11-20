@@ -17,7 +17,7 @@ import waitingLine from "./functions/waitingLine.mjs";
 
 async function getAndSelectPerf() {
   try {
-    log.dim("Getting avant-premières of 22-23 season...");
+    log.dim("Getting avant-premières of 23-24 season...");
     let performances = await event.getPerformances();
     await event.getLink(performances);
   } catch (error) {
