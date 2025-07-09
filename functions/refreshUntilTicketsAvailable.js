@@ -39,6 +39,7 @@ async function refreshUntilTicketsAvailable() {
     )
       .then((res) => res.json())
       .then((data) => {
+        console.log(data);
         if (data.data?.categories[0]?.seatsAvailability === 0) {
           log.err("This performance is unfortunately sold out.");
           process.exit(1);
@@ -50,12 +51,16 @@ async function refreshUntilTicketsAvailable() {
         perf_details = data;
         return data.status_code;
       })
-      .catch((err) => {
-        log.err("Error while getting performance details");
-        console.log(err);
-        process.exit(1);
+      .catch(async (err) => {
+        log.err("Error while getting performance details... retrying in 1s");
+        console.log(err.message);
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        return 400;
       });
     log.rm();
+    if (i > 0) {
+      log.rm();
+    }
     log.dim(`Waiting for tickets to be available... (refreshes: ${i})`);
     i++;
   }

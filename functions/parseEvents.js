@@ -58,7 +58,6 @@ async function getPerformances() {
     await new Promise((resolve) => setTimeout(resolve, 1000));
     log.err(`Error while parsing performances: ${error.message}`);
     return getPerformances();
-    log.err(`Error while parsing performances: ${error.message}`);
   }
 
   let events = {};
@@ -68,10 +67,12 @@ async function getPerformances() {
     // Build performances URLs
     let eventId = elem.id;
     let formattedDate = await getFormattedDate(eventId);
+    let productId = elem.tracking?.item_id || "";
 
     events[`${title} ${formattedDate}`] = JSON.stringify({
       eventId: eventId,
       start: formattedDate,
+      productId: productId,
     });
   }
   log.ok("All Avant-Première retrieved\n");
@@ -96,6 +97,9 @@ async function getLink(performances) {
         process.env.OPERA_PERF_DATE = JSON.parse(
           performances[answer.performance]
         ).start;
+        process.env.PRODUCT_ID = JSON.parse(
+          performances[answer.performance]
+        ).productId;
         resolve();
       });
   });

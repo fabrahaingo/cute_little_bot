@@ -3,13 +3,17 @@ import config from "../config.js";
 import log from "./customLogs.js";
 
 export default async function waitForLaunch() {
-  let endTime = moment().startOf("day").hour(1).minute(54);
+  let endTime = moment()
+    .startOf("day")
+    .hour(config.START_TIME.HOURS ?? 12)
+    .minute(config.START_TIME.MINUTES ?? 0)
+    .second(config.START_TIME.SECONDS ?? 0);
   let startTime = endTime.subtract(config.OPENING_WAIT, "seconds");
-  let timeLeft = moment.duration(endTime.diff(startTime));
-  if (timeLeft.hours() < 0) {
+  let timeLeft = moment.duration(endTime.diff(moment()));
+  if (timeLeft.hours() < -1) {
     log.rm();
     log.err(
-      `You missed ${endTime.hour()}h (opening hour). Please try again another day.`
+      `You missed ${endTime.hour()}h (opening hour) by ${timeLeft.hours()} hours. Please try again another day.`
     );
     process.exit(1);
   }

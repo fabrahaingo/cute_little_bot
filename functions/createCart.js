@@ -13,6 +13,7 @@ async function createCart() {
       seatCategoryId: process.env.OPERA_PERF_SEAT_CAT_ID,
     },
   ];
+  console.log(body);
   await fetch("https://onp-api.operadeparis.fr/api/carts", {
     method: "POST",
     headers: {
